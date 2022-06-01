@@ -6,7 +6,7 @@ class SubsctiptionApi {
   }
   
   async add(user) {
-    const request = fetch(this.apiUrl, {
+    const request = fetch(this.apiUrl + 'subscriptions/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ class SubsctiptionApi {
   }
   
   async remove(user) {
-    const query = '/?phone=' + user.phone;
+    const query = 'subscriptions/' + encodeURIComponent(user.phone);
 
     const request = fetch(this.apiUrl + query, {
       method: 'DELETE',
