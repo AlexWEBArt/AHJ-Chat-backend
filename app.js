@@ -78,5 +78,52 @@ eventSource.addEventListener('message', (e) => {
   console.log('sse message');
 });
 
+const ws = new WebSocket('ws://http://localhost:7070/ws');
+
+const chat = document.querySelector('.chat');
+const chatMessage = document.querySelector('.chat-message');
+const chatSend = document.querySelector('.chat-send');
+
+chatSend.addEventListener('click', () => {
+  const message = chatMessage.value;
+  
+  if (!message) return;
+  
+  ws.send(message);
+  
+  chatMessage.value = '';
+});
+
+ws.addEventListener('open', (e) => {
+  console.log(e);
+  
+  console.log('ws open');
+});
+
+ws.addEventListener('close', (e) => {
+  console.log(e);
+  
+  console.log('ws close');
+});
+
+ws.addEventListener('error', (e) => {
+  console.log(e);
+  
+  console.log('ws error');
+});
+
+ws.addEventListener('message', (e) => {
+  console.log(e);
+
+  const data = JSON.parse(e.data);
+  const { chat: messages } = data;
+  
+  messages.forEach(message => {
+    chat.appendChild(document.createTextNode(message) + '\n');
+  });
+  
+  console.log('ws message');
+});
+
 window.api = new SubscriptionApi('http://localhost:7070/');
 
