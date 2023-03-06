@@ -1,43 +1,43 @@
 const Router = require('koa-router');
-const subscriptions = require('../../db/db');
+const subscriptions = require('../../db/index');
 
 const router = new Router();
 
 router.post('/subscriptions', (ctx) => {
-  console.log(typeof ctx.request.body);
-  console.log(ctx.request.body);
+  // console.log(typeof ctx.request.body);
+  // console.log(ctx.request.body);
 
   ctx.response.body = 'subscriptions';
 
-  const { name, phone } = ctx.request.body;
+  const { nickname } = ctx.request.body;
 
   ctx.response.set('Access-Control-Allow-Origin', '*');
 
-  if (subscription.data.some(sub => sub.phone === phone)) {
+  if (subscriptions.data.some(sub => sub.nickname === nickname)) {
     ctx.response.status = 400;
     ctx.response.body = { status: "subscriprion exists" };
 
     return;
   }
 
-  subscriptions.add({ name, phone });
+  subscriptions.add({ nickname });
 
   ctx.response.body = { status: "OK" };
 });
 
-router.delete('/subscriptions/:phone', (ctx) => {
-  const { phone } = ctx.params;
-
+router.delete('/subscriptions/:nickname', (ctx) => {
+  const { nickname } = ctx.params;
+  console.log(nickname)
   ctx.response.set('Access-Control-Allow-Origin', '*');
 
-  if (subsriptions.data.every(sub => sub.phone !== phone)) {
+  if (subscriptions.data.every(sub => sub.nickname !== nickname)) {
     ctx.response.status = 400;
     ctx.response.body = { status: "subscriprion doesn\'t exists" };
 
     return;
   }
 
-  subscriptions.data = subscriptions.data.filter(sub => sub.phone !== phone);
+  subscriptions.remove(nickname);
 
   ctx.response.body = { status: "OK" };
 });

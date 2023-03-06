@@ -11,7 +11,7 @@ app.use(koaBody({
   urlencoded: true,
 }));
 
-app.use((ctx, next) => {
+app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
   if (!origin) {
     return await next();
@@ -54,21 +54,30 @@ const wsServer = new WS.Server({
   server
 });
 
-const chat = ['welcome to our chat'];
+const chat = [];
 
 wsServer.on('connection', (ws) => {
   ws.on('message', (message) => {
-    chat.push(message);
+      chat.push(message);
 
-    const eventData = JSON.stringify({ chat: [message] });
+      const eventData = JSON.stringify({ chat: [message] });
 
-    Array.from(wsServer.clients)
-      .filter(client => client.readyState === WS.OPEN)
-      .forEach(client => client.send(eventData));
+      Array.from(wsServer.clients)
+        .filter(client => client.readyState === WS.OPEN)
+        .forEach(client => {
+          client.send(eventData)
+        });
   });
 
     ws.send(JSON.stringify({ chat }));
 });
 
-server.listen(port);
+server.listen(port, (err) => {
+  if (err) {
+    console.log(err);
+
+    return;
+  }
+  console.log('Server is listening to ' + port);
+});
 
